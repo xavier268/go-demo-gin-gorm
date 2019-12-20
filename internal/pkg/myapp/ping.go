@@ -1,28 +1,30 @@
 package myapp
 
-import "github.com/gin-gonic/gin"
+import (
+	"time"
 
-import "time"
+	"github.com/gin-gonic/gin"
+	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/models"
+)
 
 // pingHdlr emits a pong
 func (a *MyApp) pingHdlr(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"ping": "pong",
-	})
+	ping := new(models.Ping)
+	ping.Ping = "Pong"
+	c.JSON(200, ping)
 }
 
 // pingMsgHdlr emits the receives message from the url
 func (a *MyApp) pingMsgHdlr(c *gin.Context) {
-	m := c.Params.ByName("msg")
-	c.JSON(200, gin.H{
-		"message": m,
-	})
+	m := new(models.Ping)
+	m.Ping = c.Params.ByName("msg")
+	c.JSON(200, m)
 }
 
 // pingLongHdlr is a LOOOONG ping request ...
 func (a *MyApp) pingLongHdlr(c *gin.Context) {
-	time.Sleep(30 * time.Second)
-	c.JSON(200, gin.H{
-		"delayed": "30 seconds",
-	})
+	time.Sleep(5 * time.Second)
+	m := new(models.Ping)
+	m.Ping = "Sleep"
+	c.JSON(200, m)
 }

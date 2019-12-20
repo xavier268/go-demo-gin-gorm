@@ -1,6 +1,7 @@
 package myapp
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -44,4 +45,9 @@ func New() *MyApp {
 // Run the application
 func (a *MyApp) Run() {
 	a.server.ListenAndServe()
+}
+
+// Shutdown application
+func (a *MyApp) Shutdown() {
+	go a.server.Shutdown(context.Background())
 }
