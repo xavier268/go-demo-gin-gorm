@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// MyApp is the main application object
+// MyApp is the main application object.
 // It makes the server explicitly available, to allow for graceful shutdown.
 type MyApp struct {
 	*gin.Engine
@@ -23,11 +23,18 @@ func New() *MyApp {
 		Handler: a.Engine,
 	}
 
-	a.GET("/ping", a.pingHdlr)
-	a.GET("/ping/:msg", a.pingMsgHdlr)
-	a.GET("/sleep", a.pingLongHdlr)
+	// Initialize templates
+	a.initTemplates()
 
-	a.GET("/quit", a.shutdownHdlr)
+	// Define routes
+	v1 := a.Group("/v1")
+	{
+		v1.GET("/ping", a.pingHdlr)
+		v1.GET("/ping/:msg", a.pingMsgHdlr)
+		v1.GET("/sleep", a.pingLongHdlr)
+		v1.GET("/temp", a.htmlHdlr)
+		v1.GET("/quit", a.shutdownHdlr)
+	}
 
 	return a
 }
