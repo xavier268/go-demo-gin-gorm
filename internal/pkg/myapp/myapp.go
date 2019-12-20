@@ -27,6 +27,8 @@ func New() *MyApp {
 	a.initTemplates()
 
 	// Define routes
+	a.NoRoute(a.notFoundHdlr)
+
 	v1 := a.Group("/v1")
 	{
 		v1.GET("/ping", a.pingHdlr)

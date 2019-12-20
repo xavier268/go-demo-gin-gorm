@@ -29,6 +29,13 @@ func (a *MyApp) initTemplates() {
 		{{template "test" . }}
 		{{template "footer" . }}
 		{{end}}
+
+	{{ define "404" }}
+		{{template "header" .}}
+		<h1>404 : not found error </h1>
+		Sorry, the page <b>{{.}}</b> you asked for coundn't be found ?!<br/>
+		{{template "footer" . }}
+		{{end}}
 		
 	`
 	tpl := template.Must(template.New("DO_NOT_USE").Parse(t))
