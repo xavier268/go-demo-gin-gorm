@@ -36,6 +36,9 @@ func New() *MyApp {
 		v1.GET("/ping/:msg", a.pingMsgHdlr)
 		v1.GET("/sleep", a.pingLongHdlr)
 		v1.GET("/temp", a.htmlHdlr)
+
+		v1.GET("/p/:id", a.getProductHdlr)
+
 		v1.GET("/quit", a.shutdownHdlr)
 	}
 

@@ -38,3 +38,10 @@ func (d *DAO) AllProducts() models.Products {
 	GetDAO().Order("price desc, code").Find(&pp)
 	return pp
 }
+
+// GetProduct by id
+func (d *DAO) GetProduct(id uint) *models.Product {
+	p := new(models.Product)
+	GetDAO().First(p, id)
+	return p
+}
