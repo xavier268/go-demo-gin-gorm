@@ -35,6 +35,6 @@ func (d *DAO) DeleteProducts() {
 // AllProducts dumps table content.
 func (d *DAO) AllProducts() models.Products {
 	var pp models.Products
-	GetDAO().Find(&pp)
+	GetDAO().Order("price desc, code").Find(&pp)
 	return pp
 }
