@@ -1,16 +1,19 @@
 package myapp
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+// initTemplates will consolidate and load the templates in the gin engine.
+// Reimplement using files/glog loading as needed.
 func (a *MyApp) initTemplates() {
 	const t = `
-	{{define "test1"}}
-		<div>This is test1 template with message : {{.}} </div>
+	{{define "test"}}
+		<div>This is test template with message : {{.}} </div>
 		{{end}}
 
 	{{define "header"}}
@@ -23,12 +26,18 @@ func (a *MyApp) initTemplates() {
 	
 	{{define "main" }}
 		{{template "header" .}}
-		{{template "test1" . }}
+		{{template "test" . }}
 		{{template "footer" . }}
 		{{end}}
 		
 	`
-	a.SetHTMLTemplate(template.Must(template.New("main").Parse(t)))
+	tpl := template.Must(template.New("DO_NOT_USE").Parse(t))
+	fmt.Printf("\nAvailable declared templates are  : ")
+	for _, t := range tpl.Templates() {
+		fmt.Printf("%s, ", t.Name())
+	}
+	fmt.Println("")
+	a.SetHTMLTemplate(tpl)
 }
 
 // This is a test handler to display template content.
