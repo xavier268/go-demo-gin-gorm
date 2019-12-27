@@ -23,10 +23,10 @@ type DAO struct {
 var internalDaoSingleton *DAO
 var onceInternalDao sync.Once
 
-// GetDAOMemory provides a singleton DAO.
+// getDAOMemory provides a singleton DAO.
 // It is lazily initialized and thread safe,
 // using sync.once to ensure singleton pattern is enforced.
-func GetDAOMemory() *DAO {
+func getDAOMemory() *DAO {
 
 	// define initMemoryDB to open and initialize a new in-memory database.
 	// make it local, so that no one else can call it.
@@ -47,8 +47,8 @@ func GetDAOMemory() *DAO {
 	return internalDaoSingleton
 }
 
-// GetDAOPostgres opens and return a postgres DAO.
-func GetDAOPostgres() *DAO {
+// getDAOPostgres opens and return a postgres DAO.
+func getDAOPostgres() *DAO {
 	// define initMemoryDB to open and initialize a new in-memory database.
 	// make it local, so that no one else can call it.
 	// You HAVE TO call Close() when finished with it.
@@ -70,7 +70,8 @@ func GetDAOPostgres() *DAO {
 
 // GetDAO returns the postgresDAO by default.
 func GetDAO() *DAO {
-	return GetDAOPostgres()
+	// Todo : detect test flag, and use splite3/memory for tests and postgres otherwise
+	return getDAOPostgres()
 }
 
 // Close the underlying database.
