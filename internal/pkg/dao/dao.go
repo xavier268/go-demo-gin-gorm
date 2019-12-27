@@ -9,6 +9,8 @@ import (
 
 	// import sqlite3 dialect
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	// import postgres driver
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 // DAO is the main Data Access Object.
@@ -21,10 +23,10 @@ type DAO struct {
 var internalDaoSingleton *DAO
 var onceInternalDao sync.Once
 
-// GetDAO provides a singleton DAO.
+// GetDAOMemory provides a singleton DAO.
 // It is lazily initialized and thread safe,
 // using sync.once to ensure singleton pattern is enforced.
-func GetDAO() *DAO {
+func GetDAOMemory() *DAO {
 
 	// define initMemoryDB to open and initialize a new in-memory database.
 	// make it local, so that no one else can call it.
@@ -43,6 +45,32 @@ func GetDAO() *DAO {
 	onceInternalDao.Do(initMemoryDB)
 
 	return internalDaoSingleton
+}
+
+// GetDAOPostgres opens and return a postgres DAO.
+func GetDAOPostgres() *DAO {
+	// define initMemoryDB to open and initialize a new in-memory database.
+	// make it local, so that no one else can call it.
+	// You HAVE TO call Close() when finished with it.
+	initMemoryDB := func() {
+		fmt.Println("Initializing DAO with Postgres SQL")
+		db, err := gorm.Open("postgres", "host=localhost sslmode=disable port=5432 user=postgres dbname=postgres password=secret")
+		if err != nil {
+			panic(err)
+		}
+		db.AutoMigrate(&models.Product{})
+		internalDaoSingleton = &DAO{db}
+	}
+
+	// Execute only once during the program life.
+	onceInternalDao.Do(initMemoryDB)
+
+	return internalDaoSingleton
+}
+
+// GetDAO returns the postgresDAO by default.
+func GetDAO() *DAO {
+	return GetDAOPostgres()
 }
 
 // Close the underlying database.

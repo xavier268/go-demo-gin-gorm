@@ -10,7 +10,7 @@ func TestNewDB(t *testing.T) {
 
 	dao := GetDAO()
 
-	if dao.Dialect().GetName() != "sqlite3" {
+	if dao.Dialect().GetName() != "sqlite3" && dao.Dialect().GetName() != "postgres" {
 		t.Log(dao.Dialect().GetName())
 		t.Fatal("Unexpected Dialect")
 	}
@@ -20,18 +20,16 @@ func TestCount(t *testing.T) {
 
 	dao := GetDAO()
 
-	if dao.Dialect().GetName() != "sqlite3" {
-		t.Log(dao.Dialect().GetName())
-		t.Fatal("Unexpected Dialect")
-	}
+	// initial count ...
+	c := dao.CountProducts()
 
-	if count := dao.CountProducts(); count != 0 {
+	if count := dao.CountProducts(); count != c {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 
 	dao.CreateProduct(100, "cent")
 
-	if count := dao.CountProducts(); count != 1 {
+	if count := dao.CountProducts(); count != c+1 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 
@@ -39,12 +37,12 @@ func TestCount(t *testing.T) {
 	dao.CreateProduct(300, "trois cents")
 
 	fmt.Println(dao.AllProducts().ToString())
-	if count := dao.CountProducts(); count != 3 {
+	if count := dao.CountProducts(); count != c+3 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 	dao.DeleteProduct(deux)
 	fmt.Println(dao.AllProducts().ToString())
-	if count := dao.CountProducts(); count != 2 {
+	if count := dao.CountProducts(); count != c+2 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 	dao.DeleteProducts()

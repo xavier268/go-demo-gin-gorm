@@ -7,7 +7,11 @@ import (
 // CountProducts return the number of products in db.
 func (d *DAO) CountProducts() int {
 	var count int
-	GetDAO().Model(&models.Product{}).Count(&count)
+	err := GetDAO().Model(&models.Product{}).Count(&count).Error
+	if err != nil {
+		d.Close()
+		panic(err)
+	}
 	return count
 }
 
