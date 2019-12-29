@@ -8,7 +8,7 @@ import (
 
 func TestNewDB(t *testing.T) {
 
-	dao := GetDAO()
+	dao := ts.GetDAO()
 
 	if dao.Dialect().GetName() != "sqlite3" && dao.Dialect().GetName() != "postgres" {
 		t.Log(dao.Dialect().GetName())
@@ -18,35 +18,33 @@ func TestNewDB(t *testing.T) {
 }
 func TestCount(t *testing.T) {
 
-	dao := GetDAO()
-
 	// initial count ...
-	c := dao.CountProducts()
+	c := ts.CountProducts()
 
-	if count := dao.CountProducts(); count != c {
+	if count := ts.CountProducts(); count != c {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 
-	dao.CreateProduct(100, "cent")
+	ts.CreateProduct(100, "cent")
 
-	if count := dao.CountProducts(); count != c+1 {
+	if count := ts.CountProducts(); count != c+1 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 
-	deux := dao.CreateProduct(200, "deux cents")
-	dao.CreateProduct(300, "trois cents")
+	deux := ts.CreateProduct(200, "deux cents")
+	ts.CreateProduct(300, "trois cents")
 
-	fmt.Println(dao.AllProducts().ToString())
-	if count := dao.CountProducts(); count != c+3 {
+	fmt.Println(ts.AllProducts().ToString())
+	if count := ts.CountProducts(); count != c+3 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
-	dao.DeleteProduct(deux)
-	fmt.Println(dao.AllProducts().ToString())
-	if count := dao.CountProducts(); count != c+2 {
+	ts.DeleteProduct(deux)
+	fmt.Println(ts.AllProducts().ToString())
+	if count := ts.CountProducts(); count != c+2 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
-	dao.DeleteProducts()
-	if count := dao.CountProducts(); count != 0 {
+	ts.DeleteProducts()
+	if count := ts.CountProducts(); count != 0 {
 		t.Fatalf("Unexpected count of products : %d", count)
 	}
 
@@ -54,11 +52,14 @@ func TestCount(t *testing.T) {
 
 //====================================
 
+// ts is the data source for this test
+var ts *Source = NewMemorySource()
+
 // Ensure closing db after all tests are performed.
 func TestMain(m *testing.M) {
-	UseDriverMemory()
+
 	e := m.Run()
-	if GetDAO().Close() != nil {
+	if ts.GetDAO().Close() != nil {
 		panic("Error while closing DAO !?")
 	}
 	os.Exit(e)

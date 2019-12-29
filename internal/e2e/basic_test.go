@@ -96,14 +96,12 @@ func TestProducts(t *testing.T) {
 
 	t.Parallel()
 
-	dao := dao.GetDAO()
+	ts.CreateProduct(11, "onze")
+	ts.CreateProduct(12, "douze")
+	ts.CreateProduct(13, "treize")
+	ts.CreateProduct(14, "quatorze")
 
-	dao.CreateProduct(11, "onze")
-	dao.CreateProduct(12, "douze")
-	dao.CreateProduct(13, "treize")
-	dao.CreateProduct(14, "quatorze")
-
-	fmt.Println(dao.AllProducts().ToString())
+	fmt.Println(ts.AllProducts().ToString())
 
 	resp, err := http.Get("http://localhost:8080/v1/p/2")
 	if err != nil || resp.StatusCode != http.StatusOK {
@@ -124,17 +122,17 @@ func TestProducts(t *testing.T) {
 }
 
 // ====================================================
+// ts is the test data source (memory)
+var ts *dao.Source = dao.NewMemorySource()
 
 // TestMain is a wrapper around tests, that ensures server is started and then killed ecah time.
 func TestMain(m *testing.M) {
 
-	dao.UseDriverMemory()
-
-	a := myapp.New()
+	a := myapp.New(dao.NewMemorySource())
 	go a.Run()
 	e := m.Run()
 	a.Shutdown()
-	if dao.GetDAO().Close() != nil {
+	if ts.Close() != nil {
 		panic("Error while closing DAO !?")
 	}
 	os.Exit(e)

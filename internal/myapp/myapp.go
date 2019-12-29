@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xavier268/go-demo-gin-gorm/internal/dao"
 )
 
 // MyApp is the main application object.
@@ -12,10 +13,11 @@ import (
 type MyApp struct {
 	*gin.Engine
 	server *http.Server
+	source *dao.Source
 }
 
 // New constructs a new MyApp application
-func New() *MyApp {
+func New(source *dao.Source) *MyApp {
 
 	a := new(MyApp)
 	a.Engine = gin.Default()
@@ -23,6 +25,12 @@ func New() *MyApp {
 		Addr:    ":8080",
 		Handler: a.Engine,
 	}
+
+	// Select data source
+	if source == nil {
+		panic("You provided a nil source to initialize the app ?!")
+	}
+	a.source = source
 
 	// Initialize templates
 	a.initTemplates()

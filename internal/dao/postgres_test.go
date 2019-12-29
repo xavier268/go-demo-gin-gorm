@@ -6,12 +6,11 @@ import (
 
 func TestPostgres(t *testing.T) {
 
-	UseDriverPostgres()
-	d := GetDAO()
+	d := NewPostgresSource()
 	defer d.Close()
 
-	if d.Dialect().GetName() != "postgres" {
-		t.Log(d.Dialect().GetName())
+	if d.GetDAO().Dialect().GetName() != "postgres" {
+		t.Log(d.GetDAO().Dialect().GetName())
 		t.Fatal("Unexpected Dialect")
 	}
 }

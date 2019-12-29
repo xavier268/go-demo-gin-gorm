@@ -5,11 +5,11 @@ import (
 )
 
 // CountProducts return the number of products in db.
-func (d *DAO) CountProducts() int {
+func (s *Source) CountProducts() int {
 	var count int
-	err := GetDAO().Model(&models.Product{}).Count(&count).Error
+	err := s.GetDAO().Model(&models.Product{}).Count(&count).Error
 	if err != nil {
-		d.Close()
+		s.Close()
 		panic(err)
 	}
 	return count
@@ -17,35 +17,35 @@ func (d *DAO) CountProducts() int {
 
 // CreateProduct register new product, return ID.
 // Duplicates if already exists.
-func (d *DAO) CreateProduct(price uint, code string) uint {
+func (s *Source) CreateProduct(price uint, code string) uint {
 	p := new(models.Product)
 	p.Price, p.Code = price, code
-	GetDAO().Create(&p)
+	s.GetDAO().Create(&p)
 	return p.ID
 }
 
 // DeleteProduct using primary key.
-func (d *DAO) DeleteProduct(id uint) {
+func (s *Source) DeleteProduct(id uint) {
 	p := new(models.Product)
 	p.ID = id
-	GetDAO().Delete(&p)
+	s.GetDAO().Delete(&p)
 }
 
 // DeleteProducts delete all products
-func (d *DAO) DeleteProducts() {
-	GetDAO().Delete(&models.Product{})
+func (s *Source) DeleteProducts() {
+	s.GetDAO().Delete(&models.Product{})
 }
 
 // AllProducts dumps table content.
-func (d *DAO) AllProducts() models.Products {
+func (s *Source) AllProducts() models.Products {
 	var pp models.Products
-	GetDAO().Order("price desc, code").Find(&pp)
+	s.GetDAO().Order("price desc, code").Find(&pp)
 	return pp
 }
 
 // GetProduct by id
-func (d *DAO) GetProduct(id uint) *models.Product {
+func (s *Source) GetProduct(id uint) *models.Product {
 	p := new(models.Product)
-	GetDAO().First(p, id)
+	s.GetDAO().First(p, id)
 	return p
 }

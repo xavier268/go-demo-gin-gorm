@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 
@@ -18,53 +19,53 @@ type DAO struct {
 	*gorm.DB
 }
 
-// internalDaoSingleton is a package var, lazily initiated, as a singleton.
-// Avoid accessing it directly, use GetDAO() instead.
-var internalDaoSingleton *DAO
-var internalDaoOnce sync.Once
-
-// driver and associated parameters.
-var internalDriver, internalParams string
-
-// UseDriverMemory use memory database
-func UseDriverMemory() {
-	if internalDaoSingleton != nil {
-		panic("You cannot set the driver type once a database has been created")
-	}
-	internalDriver = "sqlite3"
-	internalParams = ":memory:"
+// Source is used to generate a DAO object (singleton)
+type Source struct {
+	dao            *DAO
+	driver, params string
+	once           sync.Once
 }
 
-// UseDriverPostgres use postgres DB
-func UseDriverPostgres() {
-	if internalDaoSingleton != nil {
-		panic("You cannot set the driver type once a database has been created")
-	}
-	internalDriver = "postgres"
-	internalParams = "host=localhost sslmode=disable port=5432 user=postgres dbname=postgres password=secret"
+// NewMemorySource generate a  memory database source
+func NewMemorySource() *Source {
+	s := new(Source)
+	s.driver, s.params = "sqlite3", ":memory:"
+	return s
+}
+
+// NewPostgresSource generates a postgres source
+func NewPostgresSource() *Source {
+	s := new(Source)
+	s.driver, s.params = "postgres",
+		"host=localhost sslmode=disable port=5432 user=postgres dbname=postgres password=secret"
+	return s
 }
 
 // GetDAO returns the postgresDAO by default.
-func GetDAO() *DAO {
-	if internalDriver == "" {
-		UseDriverPostgres()
-	}
+func (s *Source) GetDAO() *DAO {
 
-	internalDaoOnce.Do(func() {
-		fmt.Printf("Initializing database with %s (%s)\n", internalDriver, internalParams)
-		db, err := gorm.Open(internalDriver, internalParams)
+	s.once.Do(func() {
+		fmt.Printf("Initializing database with %s (%s)\n", s.driver, s.params)
+		db, err := gorm.Open(s.driver, s.params)
 		if err != nil {
 			panic(err)
 		}
 		db.AutoMigrate(&models.Product{})
-		internalDaoSingleton = &DAO{db}
+		s.dao = &DAO{db}
 	})
-
-	return internalDaoSingleton
+	return s.dao
 }
 
 // Close the underlying database.
 func (d *DAO) Close() error {
-	fmt.Println("Closing database")
-	return d.DB.Close()
+	if d.DB != nil {
+		fmt.Println("Closing database")
+		return d.DB.Close()
+	}
+	return errors.New("Cannot close a non existing DAO")
+}
+
+// Close the underlying database
+func (s *Source) Close() error {
+	return s.dao.Close()
 }

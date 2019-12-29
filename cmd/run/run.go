@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xavier268/go-demo-gin-gorm/internal/dao"
 	"github.com/xavier268/go-demo-gin-gorm/internal/myapp"
 )
 
@@ -14,5 +15,5 @@ func main() {
 
 	fmt.Println("Type Ctrl-C to stop the server")
 
-	myapp.New().Run()
+	myapp.New(dao.NewPostgresSource()).Run()
 }
