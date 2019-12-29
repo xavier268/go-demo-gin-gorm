@@ -6,4 +6,8 @@ go:
 services:
 - docker
 
-script: bash -c ./script/startPostgres.sh -- && go test -v ./...
+before_install:
+- bash script/startPostgres.sh
+
+script: 
+- go test ./... -v 
