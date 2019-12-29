@@ -12,4 +12,4 @@ before_script:
 - ./scripts/startPostgres.sh
 
 script: 
-- go test ./... -v 
+- go test ./... -v -cover
