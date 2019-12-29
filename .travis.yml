@@ -3,4 +3,7 @@ language: go
 go:
 - 1.13
 
-script: ./script/startPostgres.sh && go test -v ./...
+services:
+- docker
+
+script: bash -c ./script/startPostgres.sh -- && go test -v ./...
