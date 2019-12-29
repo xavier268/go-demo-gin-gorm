@@ -53,12 +53,15 @@ func New(source *dao.Source) *MyApp {
 	return a
 }
 
-// Run the application
+// Run the application, blocking call.
 func (a *MyApp) Run() {
 	a.server.ListenAndServe()
 }
 
-// Shutdown application
+// Shutdown application, closing the data source.
 func (a *MyApp) Shutdown() {
 	go a.server.Shutdown(context.Background())
+	if a.source != nil {
+		a.source.Close()
+	}
 }

@@ -9,8 +9,8 @@ func TestPostgres(t *testing.T) {
 	d := NewPostgresSource()
 	defer d.Close()
 
-	if d.GetDAO().Dialect().GetName() != "postgres" {
-		t.Log(d.GetDAO().Dialect().GetName())
+	if d.GetDB().Dialect().GetName() != "postgres" {
+		t.Log(d.GetDB().Dialect().GetName())
 		t.Fatal("Unexpected Dialect")
 	}
 }

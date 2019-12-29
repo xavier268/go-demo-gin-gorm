@@ -15,5 +15,8 @@ func main() {
 
 	fmt.Println("Type Ctrl-C to stop the server")
 
-	myapp.New(dao.NewPostgresSource()).Run()
+	src := dao.NewPostgresSource()
+	defer src.Close()
+
+	myapp.New(src).Run()
 }

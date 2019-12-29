@@ -14,14 +14,17 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-// DAO is the main Data Access Object.
-type DAO struct {
-	*gorm.DB
+// Close the underlying database
+func (s *Source) Close() error {
+	if s.db != nil {
+		return s.db.Close()
+	}
+	return errors.New("Could not close a non existing connection")
 }
 
 // Source is used to generate a DAO object (singleton)
 type Source struct {
-	dao            *DAO
+	db             *gorm.DB
 	driver, params string
 	once           sync.Once
 }
@@ -41,8 +44,8 @@ func NewPostgresSource() *Source {
 	return s
 }
 
-// GetDAO returns the postgresDAO by default.
-func (s *Source) GetDAO() *DAO {
+// GetDB (lazily open and) returns the database associated with that source
+func (s *Source) GetDB() *gorm.DB {
 
 	s.once.Do(func() {
 		fmt.Printf("Initializing database with %s (%s)\n", s.driver, s.params)
@@ -51,21 +54,7 @@ func (s *Source) GetDAO() *DAO {
 			panic(err)
 		}
 		db.AutoMigrate(&models.Product{})
-		s.dao = &DAO{db}
+		s.db = db
 	})
-	return s.dao
-}
-
-// Close the underlying database.
-func (d *DAO) Close() error {
-	if d.DB != nil {
-		fmt.Println("Closing database")
-		return d.DB.Close()
-	}
-	return errors.New("Cannot close a non existing DAO")
-}
-
-// Close the underlying database
-func (s *Source) Close() error {
-	return s.dao.Close()
+	return s.db
 }

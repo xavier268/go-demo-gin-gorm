@@ -8,7 +8,7 @@ import (
 
 func TestNewDB(t *testing.T) {
 
-	dao := ts.GetDAO()
+	dao := ts.GetDB()
 
 	if dao.Dialect().GetName() != "sqlite3" && dao.Dialect().GetName() != "postgres" {
 		t.Log(dao.Dialect().GetName())
@@ -59,7 +59,7 @@ var ts *Source = NewMemorySource()
 func TestMain(m *testing.M) {
 
 	e := m.Run()
-	if ts.GetDAO().Close() != nil {
+	if ts.GetDB().Close() != nil {
 		panic("Error while closing DAO !?")
 	}
 	os.Exit(e)
