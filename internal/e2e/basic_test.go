@@ -9,9 +9,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/dao"
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/models"
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/myapp"
+	"github.com/xavier268/go-demo-gin-gorm/internal/dao"
+	"github.com/xavier268/go-demo-gin-gorm/internal/models"
+	"github.com/xavier268/go-demo-gin-gorm/internal/myapp"
 )
 
 func TestPing1(t *testing.T) {
@@ -127,6 +127,9 @@ func TestProducts(t *testing.T) {
 
 // TestMain is a wrapper around tests, that ensures server is started and then killed ecah time.
 func TestMain(m *testing.M) {
+
+	dao.UseDriverMemory()
+
 	a := myapp.New()
 	go a.Run()
 	e := m.Run()

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/models"
+	"github.com/xavier268/go-demo-gin-gorm/internal/models"
 )
 
 // pingHdlr emits a pong

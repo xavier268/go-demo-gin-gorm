@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/myapp"
+	"github.com/xavier268/go-demo-gin-gorm/internal/myapp"
 )
 
 func main() {

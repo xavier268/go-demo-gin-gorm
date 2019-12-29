@@ -56,6 +56,7 @@ func TestCount(t *testing.T) {
 
 // Ensure closing db after all tests are performed.
 func TestMain(m *testing.M) {
+	UseDriverMemory()
 	e := m.Run()
 	if GetDAO().Close() != nil {
 		panic("Error while closing DAO !?")

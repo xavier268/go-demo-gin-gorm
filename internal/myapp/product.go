@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/dao"
+	"github.com/xavier268/go-demo-gin-gorm/internal/dao"
 )
 
 // retrieve product from its id

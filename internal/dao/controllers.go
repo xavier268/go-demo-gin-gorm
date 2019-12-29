@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"github.com/xavier268/go-demo-gin-gorm/internal/pkg/models"
+	"github.com/xavier268/go-demo-gin-gorm/internal/models"
 )
 
 // CountProducts return the number of products in db.
