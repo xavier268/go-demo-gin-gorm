@@ -14,14 +14,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-// Close the underlying database
-func (s *Source) Close() error {
-	if s.db != nil {
-		return s.db.Close()
-	}
-	return errors.New("Could not close a non existing connection")
-}
-
 // Source is used to generate a DAO object (singleton)
 type Source struct {
 	db             *gorm.DB
@@ -57,4 +49,12 @@ func (s *Source) GetDB() *gorm.DB {
 		s.db = db
 	})
 	return s.db
+}
+
+// Close the underlying database
+func (s *Source) Close() error {
+	if s.db != nil {
+		return s.db.Close()
+	}
+	return errors.New("Could not close a non existing connection")
 }
