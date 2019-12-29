@@ -7,7 +7,7 @@ services:
 - docker
 
 before_script:
-- ll script/
+- ls -la script/
 - chmod +x script/*
 - ./script/startPostgres.sh
 
