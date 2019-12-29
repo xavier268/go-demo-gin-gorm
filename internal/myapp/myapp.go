@@ -16,7 +16,8 @@ type MyApp struct {
 	source *dao.Source
 }
 
-// New constructs a new MyApp application
+// New constructs a new MyApp application, using the provided data source.
+// The source should not be nil.
 func New(source *dao.Source) *MyApp {
 
 	a := new(MyApp)
