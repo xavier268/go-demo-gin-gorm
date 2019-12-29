@@ -6,8 +6,10 @@ go:
 services:
 - docker
 
-before_install:
-- bash script/startPostgres.sh
+before_script:
+- ll script/
+- chmod +x script/*
+- ./script/startPostgres.sh
 
 script: 
 - go test ./... -v 
