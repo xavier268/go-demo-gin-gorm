@@ -2,6 +2,7 @@ package myapp
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,9 +48,17 @@ func New(source *dao.Source) *MyApp {
 		v1.GET("/temp", a.htmlHdlr)
 
 		v1.GET("/p/:id", a.getProductHdlr)
+		v1.GET("/ps/", a.getAllProductsHdlr)
+		v1.GET("/count", a.getProductCountHdlr)
+
+		// price and code expected in query ...
+		v1.GET("/create", a.getCreateProductHdlr)
 
 		v1.GET("/quit", a.shutdownHdlr)
 	}
+
+	// Dump routes
+	a.DumpRoutes()
 
 	return a
 }
@@ -65,4 +74,13 @@ func (a *MyApp) Shutdown() {
 	if a.source != nil {
 		a.source.Close()
 	}
+}
+
+// DumpRoutes dumps the registrered routes.
+func (a *MyApp) DumpRoutes() {
+	fmt.Printf("\n========\nRoutes\n========\n")
+	for _, r := range a.Routes() {
+		fmt.Printf("%s\t%s\n\t===>\t%s\n", r.Method, r.Path, r.Handler)
+	}
+	fmt.Printf("========\n")
 }

@@ -39,7 +39,7 @@ func (s *Source) DeleteProducts() {
 // AllProducts dumps table content.
 func (s *Source) AllProducts() models.Products {
 	var pp models.Products
-	s.GetDB().Order("price desc, code").Find(&pp)
+	s.GetDB().Order("ID desc").Find(&pp)
 	return pp
 }
 
