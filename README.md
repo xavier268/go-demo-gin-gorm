@@ -5,3 +5,4 @@
 
 # go-demo-gin-gorm
 Demo using gin and gorm. 
+Various architecture examples and bestat practices.

@@ -114,8 +114,9 @@ func TestProducts(t *testing.T) {
 
 // ====================================================
 
-// do will send url, and compare body to expectedBody (regex),
-// and status to expectedStatus. Will return the body as a string.
+// do will send url, compare body to expectedBody (regex),
+// and compare status to expectedStatus.
+// Will return the body as string for further testing.
 func do(t *testing.T, url string, expectedStatus int, expectedBody string) string {
 	resp, err := http.Get(url)
 	if err != nil {
