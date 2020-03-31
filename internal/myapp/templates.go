@@ -12,13 +12,29 @@ import (
 // Reimplement using files/glog loading as needed.
 func (a *MyApp) initTemplates() {
 
-	tpl := template.Must(template.New("DO_NOT_USE").ParseGlob("./templates/*.html"))
-	fmt.Printf("\nAvailable declared templates are  : ")
-	for _, t := range tpl.Templates() {
-		fmt.Printf("%s, ", t.Name())
+	tt := []string{
+		"./templates/*.html",
+		"../templates/*.html",
+		"../../templates/*.html",
+		"../../../templates/*.html",
 	}
-	fmt.Println("")
-	a.SetHTMLTemplate(tpl)
+
+	for _, tempPath := range tt {
+		tpl, err := template.New("DO_NOT_USE").ParseGlob(tempPath)
+		if err == nil {
+			fmt.Println("Loaded templates from : ", tempPath)
+			fmt.Printf("\nAvailable declared templates are  : ")
+			for _, t := range tpl.Templates() {
+				fmt.Printf("%s, ", t.Name())
+			}
+			fmt.Println("")
+			a.SetHTMLTemplate(tpl)
+			return
+		}
+		fmt.Println("Tried to load templates from : ", tempPath, "\n-->\terror :", err)
+	}
+	panic("Could not load templates ")
+
 }
 
 // This is a test handler to display template content.

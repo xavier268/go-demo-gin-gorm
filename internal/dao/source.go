@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"errors"
 	"fmt"
 	"sync"
 
@@ -56,5 +55,5 @@ func (s *Source) Close() error {
 	if s.db != nil {
 		return s.db.Close()
 	}
-	return errors.New("Could not close a non existing connection")
+	return nil
 }
