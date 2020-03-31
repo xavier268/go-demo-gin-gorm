@@ -9,7 +9,7 @@ import (
 // render will render the data as json, xml, or htm (with provided template).
 // selection is done based upon the Accept header, if present, or the existence
 // of a query parameter named json or xml.
-func (a *MyApp) render(c *gin.Context, data gin.H, templateName string) {
+func (a *MyApp) render(c *gin.Context, data interface{}, templateName string) {
 	h := c.Request.Header.Get("Accept")
 	switch {
 	case h == "application/json" || c.Query("json") != "":
