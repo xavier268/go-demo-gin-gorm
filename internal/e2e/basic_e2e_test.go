@@ -125,7 +125,7 @@ func TestProducts(t *testing.T) {
 // ts is the test data source (memory)
 var ts *dao.Source
 
-// TestMain is a wrapper around tests, that ensures server is started and then killed ecah time.
+// TestMain is a wrapper around tests, that ensures server is started and then killed each time.
 func TestMain(m *testing.M) {
 
 	ts = dao.NewMemorySource()

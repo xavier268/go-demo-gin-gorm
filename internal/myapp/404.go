@@ -1,9 +1,11 @@
 package myapp
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
 
-import "net/http"
+	"github.com/gin-gonic/gin"
+)
 
 func (a *MyApp) notFoundHdlr(c *gin.Context) {
-	c.HTML(http.StatusNotFound, "404", c.Request.URL)
+	c.HTML(http.StatusNotFound, "404.html", c.Request.URL)
 }

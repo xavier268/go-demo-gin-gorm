@@ -11,34 +11,8 @@ import (
 // initTemplates will consolidate and load the templates in the gin engine.
 // Reimplement using files/glog loading as needed.
 func (a *MyApp) initTemplates() {
-	const t = `
-	{{define "test"}}
-		<div>This is test template with message : {{.}} </div>
-		{{end}}
 
-	{{define "header"}}
-		<html><body>
-		{{end}}
-	
-	{{define "footer"}}
-		</body></html>
-		{{end}}
-	
-	{{define "main" }}
-		{{template "header" .}}
-		{{template "test" . }}
-		{{template "footer" . }}
-		{{end}}
-
-	{{ define "404" }}
-		{{template "header" .}}
-		<h1>404 : not found error </h1>
-		Sorry, the page <b>{{.}}</b> you asked for coundn't be found ?!<br/>
-		{{template "footer" . }}
-		{{end}}
-		
-	`
-	tpl := template.Must(template.New("DO_NOT_USE").Parse(t))
+	tpl := template.Must(template.New("DO_NOT_USE").ParseGlob("./templates/*.html"))
 	fmt.Printf("\nAvailable declared templates are  : ")
 	for _, t := range tpl.Templates() {
 		fmt.Printf("%s, ", t.Name())
@@ -49,5 +23,5 @@ func (a *MyApp) initTemplates() {
 
 // This is a test handler to display template content.
 func (a *MyApp) htmlHdlr(c *gin.Context) {
-	c.HTML(http.StatusOK, "main", "hello world !")
+	c.HTML(http.StatusOK, "main.html", "hello world !")
 }
