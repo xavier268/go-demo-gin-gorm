@@ -4,18 +4,11 @@ package e2e
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xavier268/go-demo-gin-gorm/internal/dao"
-	"github.com/xavier268/go-demo-gin-gorm/internal/models"
-	"github.com/xavier268/go-demo-gin-gorm/internal/myapp"
 )
 
 func TestPing1Json(t *testing.T) {
@@ -88,79 +81,14 @@ func TestProducts(t *testing.T) {
 	// t.Parallel()
 
 	ts.CreateProduct(11, "onze")
-	ts.CreateProduct(12, "douze")
+	if id := ts.CreateProduct(12, "douze"); id != 2 {
+		t.Fatal("Expected ID of 2, but got ", id)
+	}
 	ts.CreateProduct(13, "treize")
 	ts.CreateProduct(14, "quatorze")
 
 	fmt.Println(ts.AllProducts().ToString())
 
-	resp, err := http.Get("http://localhost:8080/v1/p/2")
-	if err != nil || resp.StatusCode != http.StatusOK {
-		t.Log("Error : ", err)
-		t.Log("Resp  : ", resp)
-		t.Fail()
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Log(body)
-		t.Fatal(err)
-	}
-	res := new(models.Product)
-	json.Unmarshal([]byte(body), res)
-	fmt.Printf("\n%+v", res.ToString())
+	do(t, "http://localhost:8080/v1/p/2", http.StatusOK, "^.*\\{.*douze.*$")
 
-}
-
-// ====================================================
-
-// do will send url, compare body to expectedBody (regex),
-// and compare status to expectedStatus.
-// Will return the body as string for further testing.
-func do(t *testing.T, url string, expectedStatus int, expectedBody string) string {
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Printf("ERROR : %v\n\turl \t %s\n", err, url)
-		t.Fatal(err)
-	}
-	if resp.StatusCode != expectedStatus {
-		fmt.Printf("ERROR : \n  expected code : %d\n        got code : %d\n", expectedStatus, resp.StatusCode)
-		t.FailNow()
-	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	body = []byte(strings.ReplaceAll(string(body), "\n", ""))
-	match, err := regexp.Match(expectedBody, body)
-	if err != nil {
-		t.Fatal("Eror trying to match body with regex : ", expectedBody, "\nerror : ", err)
-	}
-	if !match {
-		fmt.Println("Body expected regex : ", expectedBody)
-		fmt.Println("Body actual string  : ", string(body))
-		t.Fatal("body did not match expectation")
-	}
-	return string(body)
-}
-
-// ts is the test data source (memory)
-var ts *dao.Source
-
-// TestMain is a wrapper around tests, that ensures server is started and then killed each time.
-func TestMain(m *testing.M) {
-
-	ts = dao.NewMemorySource()
-	a := myapp.New(ts)
-
-	go a.Run()
-	e := m.Run()
-	a.Shutdown()
-	if ts.Close() != nil {
-		panic("Error while closing DAO !?")
-	}
-	os.Exit(e)
 }

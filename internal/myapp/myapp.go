@@ -65,7 +65,15 @@ func New(source *dao.Source) *MyApp {
 
 // Run the application, blocking call.
 func (a *MyApp) Run() {
-	a.server.ListenAndServe()
+	fmt.Printf(
+		"\n========================\n"+
+			"Serving from address  %s"+
+			"\n========================\n",
+		a.server.Addr)
+	err := a.server.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Shutdown application, closing the data source.
