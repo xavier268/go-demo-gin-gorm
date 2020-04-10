@@ -15,7 +15,8 @@ func (a *MyApp) render(c *gin.Context, data interface{}, templateName string) {
 	case h == "application/json" || c.Query("json") != "":
 		{
 			// respond with json
-			c.IndentedJSON(http.StatusOK, data)
+			// c.IndentedJSON(http.StatusOK, data)
+			c.JSON(http.StatusOK, data)
 		}
 	case h == "application/xml" || c.Query("xml") != "":
 		{
